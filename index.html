@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7f4">
+  <meta name="description" content="SmartFlow AI is an adaptive traffic management dashboard with a real-time intersection simulation and optional live traffic data.">
+  <title>SmartFlow AI — Traffic Control Center</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#overview" aria-label="SmartFlow AI home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M5 10.5h11.5a4 4 0 0 0 0-8H12M27 21.5H15.5a4 4 0 0 0 0 8H20M8 16h16" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="7" cy="16" r="2" fill="currentColor"/><circle cx="25" cy="16" r="2" fill="currentColor"/></svg>
+        </span>
+        <span>smartflow<span class="brand-ai">.ai</span></span>
+      </a>
+
+      <div class="workspace-label">WORKSPACE</div>
+      <div class="workspace-select">
+        <span class="workspace-icon">D</span>
+        <span class="workspace-copy"><strong>New Delhi</strong><small>India · IST (UTC+5:30)</small></span>
+        <span class="chevron" aria-hidden="true">⌄</span>
+      </div>
+
+      <div class="nav-label">CONTROL CENTER</div>
+      <nav class="side-nav">
+        <a class="nav-link active" href="#overview" aria-current="page"><span class="nav-icon">◫</span>Overview</a>
+        <a class="nav-link" href="#intersection"><span class="nav-icon">⌗</span>Intersections<span class="nav-count">4</span></a>
+        <a class="nav-link" href="#optimizer"><span class="nav-icon">⌁</span>Signal optimizer</a>
+        <a class="nav-link" href="#analytics"><span class="nav-icon">▥</span>Analytics</a>
+      </nav>
+
+      <div class="nav-label secondary-label">SYSTEM</div>
+      <nav class="side-nav">
+        <a class="nav-link" href="#data-feed"><span class="nav-icon">◎</span>Data sources</a>
+        <a class="nav-link" href="#how-it-works"><span class="nav-icon">ⓘ</span>How it works</a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="city-card">
+          <div class="city-card-top"><span class="pulse-dot"></span>SIMULATION ONLINE</div>
+          <strong>City network</strong>
+          <span>4 intersections connected</span>
+          <div class="city-progress"><i></i></div>
+          <div class="city-card-foot"><span>Network health</span><strong>98.6%</strong></div>
+        </div>
+        <div class="profile">
+          <div class="avatar">SF</div>
+          <div class="profile-copy"><strong>Traffic operator</strong><span>Control room</span></div>
+          <button class="more-button" type="button" aria-label="Profile options">···</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content" id="overview">
+      <header class="topbar">
+        <div class="breadcrumbs">New Delhi <span>/</span> <strong>Traffic overview</strong></div>
+        <div class="topbar-right">
+          <div class="live-clock"><span class="pulse-dot"></span><span id="clock">--:--:--</span><span class="clock-zone">IST</span><span class="clock-date" id="clock-zone">--</span></div>
+          <button class="icon-button" id="refresh-feed" type="button" aria-label="Refresh traffic data" title="Refresh traffic data"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5m-4.1-2A7.5 7.5 0 0 1 17.6 6L20 12M4 12l2.4 6a7.5 7.5 0 0 0 12.7-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="icon-button notification-button" type="button" aria-label="Notifications"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8 12h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><i></i></button>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <section class="page-heading">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-dot"></span>INDIA TRAFFIC SIGNAL SIMULATOR</div>
+            <h1>Namaste, traffic operator <span class="wave">✳</span></h1>
+            <p class="heading-subtitle">Time-of-day signal plans and live intersection simulation · Indian Standard Time.</p>
+          </div>
+          <button class="button button-dark" id="simulation-toggle" type="button"><span class="button-play" aria-hidden="true">Ⅱ</span><span id="simulation-toggle-label">Pause simulation</span></button>
+        </section>
+
+        <section class="metrics-grid" aria-label="Network traffic metrics">
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-label">VEHICLES IN SIMULATION</span><span class="metric-icon icon-lime">↗</span></div>
+            <div class="metric-value" id="vehicle-total">1,284</div>
+            <div class="metric-bottom"><span class="metric-change positive"><span>↗</span> 8.2%</span><span>vs. last hour</span><svg class="sparkline green-spark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"><path d="M1 22C13 20 12 23 23 17s14 7 24-2 14 7 25-2 12 4 27-9" /></svg></div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-label">AVERAGE WAIT TIME</span><span class="metric-icon icon-peach">◷</span></div>
+            <div class="metric-value"><span id="wait-time">18</span><small>sec</small></div>
+            <div class="metric-bottom"><span class="metric-change positive">↓ 12.4%</span><span>vs. fixed signals</span><svg class="sparkline peach-spark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"><path d="M1 5C13 8 15 4 24 12s13-2 24 8 12-1 25 3 14-8 26 1" /></svg></div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-label">ACTIVE INTERSECTIONS</span><span class="metric-icon icon-lilac">⌗</span></div>
+            <div class="metric-value">04<span class="metric-fraction"> / 04</span></div>
+            <div class="metric-bottom"><span class="status-text"><i class="small-status-dot"></i>All systems operational</span></div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-label">FUEL SAVED TODAY</span><span class="metric-icon icon-blue">ϟ</span></div>
+            <div class="metric-value"><span id="fuel-saved">146</span><small>L</small></div>
+            <div class="metric-bottom"><span class="metric-change positive">↑ 6.8%</span><span>estimated savings</span></div>
+          </article>
+        </section>
+
+        <section class="dashboard-grid" id="intersection">
+          <article class="panel intersection-panel">
+            <div class="panel-heading">
+              <div><span class="section-kicker">LIVE SIMULATION · LEFT-HAND TRAFFIC</span><h2>Connaught Place, New Delhi</h2></div>
+              <button class="select-button" id="intersection-select" type="button" aria-label="Select intersection">CP-01 <span>⌄</span></button>
+            </div>
+            <div class="intersection-scene">
+              <div class="map-label label-n">NORTHBOUND <strong id="count-north">42</strong></div>
+              <div class="map-label label-e">EASTBOUND <strong id="count-east">28</strong></div>
+              <div class="map-label label-s">SOUTHBOUND <strong id="count-south">36</strong></div>
+              <div class="map-label label-w">WESTBOUND <strong id="count-west">24</strong></div>
+              <div class="road road-horizontal"></div>
+              <div class="road road-vertical"></div>
+              <div class="road-divider divider-horizontal"></div>
+              <div class="road-divider divider-vertical"></div>
+              <div class="crosswalk crosswalk-n"></div><div class="crosswalk crosswalk-s"></div>
+              <div class="crosswalk crosswalk-e"></div><div class="crosswalk crosswalk-w"></div>
+              <div class="center-island"><div class="island-inner"><span>SF</span></div></div>
+              <div class="traffic-light light-north"><i class="lamp lamp-red"></i><i class="lamp lamp-green" id="light-north"></i><i class="lamp lamp-yellow"></i></div>
+              <div class="traffic-light light-east"><i class="lamp lamp-red"></i><i class="lamp lamp-green" id="light-east"></i><i class="lamp lamp-yellow"></i></div>
+              <div class="traffic-light light-south"><i class="lamp lamp-red"></i><i class="lamp lamp-green" id="light-south"></i><i class="lamp lamp-yellow"></i></div>
+              <div class="traffic-light light-west"><i class="lamp lamp-red"></i><i class="lamp lamp-green" id="light-west"></i><i class="lamp lamp-yellow"></i></div>
+              <span class="car car-n car-a"></span><span class="car car-n car-b"></span>
+              <span class="car car-e car-c"></span><span class="car car-e car-d"></span>
+              <span class="car car-s car-e"></span><span class="car car-w car-f"></span>
+              <div class="map-caption"><span class="pulse-dot"></span><span id="scene-status">NORTH + SOUTH · GREEN</span><span class="caption-divider">·</span><span id="countdown">00:00</span></div>
+            </div>
+            <div class="intersection-footer">
+              <div class="feed-source"><span class="feed-source-icon">⌁</span><span><strong id="feed-status">Simulation data</strong><small id="feed-detail">Synthetic queue counts · refreshes every 3s</small></span></div>
+              <div class="confidence"><span>DATA CONFIDENCE</span><strong id="confidence-value">96%</strong><span class="confidence-bar"><i id="confidence-bar-fill"></i></span></div>
+              <button class="text-button" id="connect-feed" type="button">Connect live feed <span>↗</span></button>
+            </div>
+          </article>
+
+          <article class="panel optimizer-panel" id="optimizer">
+            <div class="panel-heading">
+              <div><span class="section-kicker">SIGNAL CONTROL MODEL</span><h2>Indian timing plan</h2></div>
+              <label class="mode-select-label" for="signal-mode">CONTROL MODE</label>
+            </div>
+            <select class="mode-select" id="signal-mode" aria-label="Signal control mode">
+              <option value="fixed">Fixed-time · time of day</option>
+              <option value="actuated">Traffic-actuated · queue based</option>
+              <option value="manual">Manual · operator control</option>
+            </select>
+            <div class="schedule-card">
+              <div class="schedule-card-top"><span class="schedule-icon">◷</span><span><strong id="time-profile">Loading India time profile…</strong><small id="period-description">Signal schedule uses Asia/Kolkata time</small></span><span class="period-badge" id="period-badge">IST</span></div>
+              <div class="schedule-explain"><span id="mode-status">Fixed-time schedule</span><span class="schedule-separator">·</span><span id="signal-stage">NORTH + SOUTH · GREEN</span></div>
+            </div>
+            <p class="panel-description">Opposing approaches run together in two stages. Fixed mode follows the clock schedule; actuated mode splits green time by combined queue demand.</p>
+            <div class="demand-list">
+              <div class="demand-row">
+                <span class="direction-icon north-icon">↑</span><span class="direction-name">Northbound<small>Stage 1 · shared green</small></span>
+                <div class="demand-bar"><i id="bar-north"></i></div>
+                <label class="vehicle-input"><input aria-label="Northbound vehicle count" data-direction="north" type="number" min="0" max="999" value="42"><span>veh</span></label>
+                <strong class="green-time" id="time-north">32s</strong>
+              </div>
+              <div class="demand-row">
+                <span class="direction-icon east-icon">→</span><span class="direction-name">Eastbound<small>Stage 2 · shared green</small></span>
+                <div class="demand-bar"><i id="bar-east"></i></div>
+                <label class="vehicle-input"><input aria-label="Eastbound vehicle count" data-direction="east" type="number" min="0" max="999" value="28"><span>veh</span></label>
+                <strong class="green-time" id="time-east">40s</strong>
+              </div>
+              <div class="demand-row">
+                <span class="direction-icon south-icon">↓</span><span class="direction-name">Southbound<small>Stage 1 · shared green</small></span>
+                <div class="demand-bar"><i id="bar-south"></i></div>
+                <label class="vehicle-input"><input aria-label="Southbound vehicle count" data-direction="south" type="number" min="0" max="999" value="36"><span>veh</span></label>
+                <strong class="green-time" id="time-south">32s</strong>
+              </div>
+              <div class="demand-row">
+                <span class="direction-icon west-icon">←</span><span class="direction-name">Westbound<small>Stage 2 · shared green</small></span>
+                <div class="demand-bar"><i id="bar-west"></i></div>
+                <label class="vehicle-input"><input aria-label="Westbound vehicle count" data-direction="west" type="number" min="0" max="999" value="24"><span>veh</span></label>
+                <strong class="green-time" id="time-west">40s</strong>
+              </div>
+            </div>
+            <div class="cycle-summary"><span><span class="cycle-dot"></span>EXAMPLE CYCLE · GREEN + CLEARANCE</span><strong id="cycle-total">100s</strong><span class="cycle-note" id="cycle-note">N/S and E/W run together · 3s amber + 1s all-red per change</span></div>
+            <div class="optimizer-actions"><button class="button button-primary" id="apply-plan" type="button"><span>✳</span> Apply plan to simulation</button><button class="button button-outline" id="randomize-counts" type="button">↻ <span class="sr-only">Generate demo</span> Simulate traffic</button><button class="button button-outline" id="manual-advance" type="button" hidden>Advance signal</button></div>
+            <div class="optimizer-note"><span>ⓘ</span> Illustrative schedule only—not an official city timing. Amber and all-red clearance separate opposing stages; no real signal is controlled.</div>
+          </article>
+        </section>
+
+        <section class="bottom-grid" id="analytics">
+          <article class="panel flow-panel">
+            <div class="panel-heading chart-heading">
+              <div><span class="section-kicker">NETWORK PERFORMANCE</span><h2>Traffic flow today</h2></div>
+              <div class="chart-legend"><span><i class="legend-live"></i>Adaptive flow</span><span><i class="legend-baseline"></i>Fixed timing baseline</span></div>
+              <button class="select-button period-select" type="button" aria-label="Chart time period">Today <span>⌄</span></button>
+            </div>
+            <div class="chart-wrap">
+              <div class="chart-y-labels"><span>1,500</span><span>1,000</span><span>500</span><span>0</span></div>
+              <div class="chart-main">
+                <div class="chart-grid-lines"><i></i><i></i><i></i><i></i></div>
+                <svg class="flow-chart" viewBox="0 0 700 180" preserveAspectRatio="none" role="img" aria-label="Illustrative traffic flow comparison for today">
+                  <defs><linearGradient id="flow-area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#98bd3d" stop-opacity=".24"/><stop offset="1" stop-color="#98bd3d" stop-opacity="0"/></linearGradient></defs>
+                  <path class="area-path" d="M0 123C26 118 42 100 69 108S116 129 139 94 185 102 207 79 247 83 277 72 321 88 346 61 386 71 416 55 456 67 485 43 523 57 555 48S591 35 634 48S665 25 700 19V180H0Z"/>
+                  <path class="baseline-path" d="M0 138C27 122 42 139 69 125S111 139 139 116 182 128 207 107 252 120 277 102 320 117 346 95 388 113 416 90 459 105 485 84 522 101 555 78S593 91 632 66S666 76 700 73"/>
+                  <path class="flow-path" d="M0 123C26 118 42 100 69 108S116 129 139 94 185 102 207 79 247 83 277 72 321 88 346 61 386 71 416 55 456 67 485 43 523 57 555 48S591 35 634 48S665 25 700 19"/>
+                  <circle cx="555" cy="48" r="4.5" class="chart-point"/>
+                </svg>
+                <div class="chart-x-labels"><span>6 AM</span><span>8 AM</span><span>10 AM</span><span>12 PM</span><span>2 PM</span><span>4 PM</span><span>6 PM</span></div>
+              </div>
+            </div>
+            <p class="chart-disclaimer">Illustrative network trend · simulated data, not a measured live city feed</p>
+          </article>
+          <article class="panel impact-panel">
+            <div class="panel-heading"><div><span class="section-kicker">TODAY’S IMPACT</span><h2>Small changes, big difference</h2></div></div>
+            <div class="impact-stat"><div class="impact-icon impact-green">↗</div><div><span>Average delay reduced</span><strong>−12.4<small>%</small></strong></div><span class="impact-tag">vs. fixed timing</span></div>
+            <div class="impact-stat"><div class="impact-icon impact-blue">◉</div><div><span>Estimated CO₂ avoided</span><strong><span id="co2-saved">38</span><small> kg</small></strong></div><span class="impact-tag">simulated</span></div>
+            <div class="impact-foot"><span class="impact-spark">↗</span><span>Calculated from simulation assumptions. Actual outcomes vary by location and conditions.</span></div>
+          </article>
+        </section>
+
+        <section class="data-source-section" id="india-schedule">
+          <div class="source-copy"><span class="section-kicker">INDIA TIME-OF-DAY SCHEDULE</span><h2>One junction, changing traffic through the day</h2><p>IST profiles illustrate low-flow overnight, morning commute, midday, evening peak and late evening. Weekends use lighter simulated demand; cities set actual plans from local traffic studies.</p></div>
+          <div class="schedule-chips" aria-label="Example India signal schedule"><span>00–06 <strong>Night · 80s</strong></span><span>06–10 <strong>AM peak · 120s</strong></span><span>10–17 <strong>Midday · 100s</strong></span><span>17–22 <strong>PM peak · 130s</strong></span><span>22–24 <strong>Late · 90s</strong></span></div>
+        </section>
+        <section class="data-source-section" id="data-feed">
+          <div class="source-copy"><span class="section-kicker">DATA CONNECTION</span><h2>Bring your city’s traffic into view</h2><p>Connect an optional TomTom Traffic API key on the server for live road speeds. The interactive simulation runs without an API key. Live flow speed is not a vehicle count.</p></div>
+          <div class="source-connection"><span class="source-logo">T</span><span><strong>TomTom Traffic</strong><small id="api-connection-status">Checking server connection…</small></span><button class="button button-outline" id="connect-feed-secondary" type="button">Check connection</button></div>
+        </section>
+
+        <footer class="footer" id="how-it-works"><span><strong>smartflow.ai</strong> · Adaptive traffic, clearer journeys. <a href="https://www.madeeasy.in/study/ce/highway-engineering/traffic-signals" target="_blank" rel="noreferrer">Signal concepts reference ↗</a></span><span>India example only · verify timing and safety with the local traffic authority</span></footer>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
